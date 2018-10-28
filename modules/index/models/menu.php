@@ -65,6 +65,10 @@ class Model
                         'text' => '{LNG_Member status}',
                         'url' => 'index.php?module=memberstatus',
                     ),
+                    array(
+                        'text' => '{LNG_Language}',
+                        'url' => 'index.php?module=language',
+                    ),
                 ),
             ),
             'signout' => array(

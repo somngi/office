@@ -31,6 +31,7 @@ return array(
   ),
   'Authentication require' => 'การตรวจสอบความถูกต้อง',
   'Authorized' => 'ผู้มีอำนาจ',
+  'Background image' => 'รูปภาพพื้นหลัง',
   'BOOLEANS' => array(
     0 => 'ปิดใช้งาน',
     1 => 'เปิดใช้งาน'
@@ -109,6 +110,7 @@ return array(
   'List of' => 'รายการ',
   'Login information' => 'ข้อมูลการเข้าระบบ',
   'Login with an existing account' => 'เข้าระบบด้วยบัญชีสมาชิกที่มีอยู่แล้ว',
+  'Logo' => 'โลโก',
   'Logout successful' => 'ออกจากระบบเรียบร้อย',
   'Mail program' => 'โปรแกรมส่งอีเมล',
   'Mail server' => 'เซิร์ฟเวอร์อีเมล',
@@ -221,6 +223,7 @@ return array(
   'Specify the file extension that allows uploading. English lowercase letters and numbers 2-4 characters to separate each type with a comma (,) and without spaces. eg zip,rar,doc,docx' => 'ระบุนามสกุลของไฟล์ที่ยอมให้อัปโหลด ภาษาอังกฤษตัวพิมพ์เล็กและตัวเลข 2-6 ตัวอักษรต่อ 1 ชนิด คั่นแต่ละชนิดด้วย ลูกน้ำ (,) และไม่ต้องมีช่องว่าง เช่น zip,rar,doc,docx',
   'Specify the language code of the email, as utf-8' => 'ระบุรหัสภาษาของอีเมลที่ส่ง เช่น utf-8',
   'Status for general members' => 'สถานะสำหรับสมาชิกทั่วไป',
+  'Style' => 'รูปแบบ',
   'successfully copied to clipboard' => 'สำเนาไปยังคลิปบอร์ดเรียบร้อยแล้ว',
   'The details of the creditor are used for entering into the contract' => 'รายละเอียดของเจ้าหนี้ใช้สำหรับใส่ลงในสัญญา',
   'The members status of the site' => 'สถานะของสมาชิกของเว็บไซต์',

@@ -20,7 +20,7 @@ use Kotchasan\Language;
  *
  * @since 1.0
  */
-class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
+class Login extends \Kotchasan\Login
 {
     /**
      * ฟังก์ชั่นตรวจสอบการ login และบันทึกการเข้าระบบ
@@ -41,17 +41,28 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
             $ip = self::$request->getClientIp();
             // current session
             $session_id = session_id();
+            // token
+            $login_result['token'] = sha1(uniqid());
             // อัปเดทการเยี่ยมชม
             if ($session_id != $login_result['session_id']) {
                 ++$login_result['visited'];
+                $save = array(
+                    'session_id' => $session_id,
+                    'visited' => $login_result['visited'],
+                    'lastvisited' => time(),
+                    'ip' => $ip,
+                    'token' => $login_result['token'],
+                );
+            } else {
+                $save = array(
+                    'token' => $login_result['token'],
+                );
+            }
+            // บันทึกการเข้าระบบ
+            if (isset($save)) {
                 \Kotchasan\Model::createQuery()
                     ->update('user')
-                    ->set(array(
-                        'session_id' => $session_id,
-                        'visited' => $login_result['visited'],
-                        'lastvisited' => time(),
-                        'ip' => $ip,
-                    ))
+                    ->set($save)
                     ->where((int) $login_result['id'])
                     ->execute();
             }
@@ -83,13 +94,19 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
             ->toArray();
         $login_result = null;
         foreach ($query->execute() as $item) {
-            if ($item['password'] == sha1($params['password'].$item['salt'])) {
-                if ($item['status'] == 1 || $item['active'] == 1) {
-                    // permission
-                    $item['permission'] = empty($item['permission']) ? array() : explode(',', trim($item['permission'], " \t\n\r\0\x0B,"));
-                    $login_result = $item;
-                    break;
-                }
+            if (isset($params['password']) && $item['password'] == sha1($params['password'].$item['salt'])) {
+                // ตรวจสอบรหัสผ่าน
+                $login_result = $item;
+            } elseif (isset($params['token']) && $item['token'] == $item['token']) {
+                // ตรวจสอบ token
+                $login_result = $item;
+            }
+            if ($login_result && $login_result['status'] == 1 || $login_result['active'] == 1) {
+                // permission
+                $login_result['permission'] = empty($login_result['permission']) ? array() : explode(',', trim($login_result['permission'], " \t\n\r\0\x0B,"));
+                break;
+            } else {
+                $login_result = null;
             }
         }
         if ($login_result === null) {
@@ -157,19 +174,18 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
             // ตาราง user
             $table = $model->getTableName('user');
             // ค้นหาอีเมล
-            $search = $model->db()->first($table, array(array($field, $username), array('fb', '0')));
+            $search = $model->db()->first($table, array(array($field, $username), array('social', 0)));
             if ($search === false) {
                 self::$login_message = Language::get('not a registered user');
             } else {
-                // สุ่มรหัสผ่านใหม่
-                $password = \Kotchasan\Text::rndname(6);
-                // ส่งอีเมลขอรหัสผ่านใหม่
-                $err = \Index\Forgot\Model::execute($search->id, $password, $search->$field);
-                // คืนค่า
+                // ขอรหัสผ่านใหม่
+                $err = \Index\Forgot\Model::execute($search->id, $search->$field);
                 if ($err == '') {
+                    // คืนค่า
                     self::$login_message = Language::get('Your message was sent successfully');
                     self::$request = $request->withQueryParams(array('action' => 'login'));
                 } else {
+                    // ไม่สำเร็จ
                     self::$login_message = $err;
                 }
             }
@@ -186,6 +202,6 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
      */
     public static function notDemoMode($login)
     {
-        return $login && !empty($login['fb']) && self::$cfg->demo_mode ? null : $login;
+        return $login && !empty($login['social']) && self::$cfg->demo_mode ? null : $login;
     }
 }

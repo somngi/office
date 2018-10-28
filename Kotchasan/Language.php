@@ -166,7 +166,7 @@ final class Language extends \Kotchasan\KBase
             $files = array();
             File::listFiles($language_folder, $files);
             foreach ($files as $file) {
-                if (preg_match('/(.*\/([a-z]{2,2}))\.(php|js)/', $file, $match)) {
+                if (preg_match('/(.*\/([a-z]{2,2}))\.(php|js)$/', $file, $match)) {
                     self::$installed_languages[$match[2]] = $match[2];
                 }
             }
@@ -220,6 +220,22 @@ final class Language extends \Kotchasan\KBase
     {
         if (null === self::$languages) {
             new static();
+        }
+
+        return self::$language_name;
+    }
+
+    /**
+     * กำหนดภาษาที่ต้องการ.
+     *
+     * @param string $language
+     *
+     * @return string
+     */
+    public static function setName($language)
+    {
+        if (null === self::$languages || $language !== self::$languages) {
+            new static($language);
         }
 
         return self::$language_name;
@@ -348,13 +364,17 @@ final class Language extends \Kotchasan\KBase
 
     /**
      * โหลดภาษา.
+     *
+     * @param string $lang ภาษาที่ต้องการ ถ้าไม่ระบุจะอ่านจาก cookie my_lang
      */
-    private function __construct()
+    private function __construct($lang = null)
     {
         // โฟลเดอร์ ภาษา
         $language_folder = self::languageFolder();
         // ภาษาที่เลือก
-        $lang = self::$request->get('lang', self::$request->cookie('my_lang', '')->toString())->filter('a-z');
+        if ($lang === null) {
+            $lang = self::$request->get('lang', self::$request->cookie('my_lang', '')->toString())->filter('a-z');
+        }
         if (empty($lang)) {
             if (defined('AUTO_LANGUAGE') && AUTO_LANGUAGE === true) {
                 // ภาษาจาก Browser
@@ -375,7 +395,7 @@ final class Language extends \Kotchasan\KBase
                         self::$languages = (object) $language;
                         self::$language_name = $item;
                         // บันทึกภาษาที่กำลังใช้งานอยู่ลงใน cookie
-                        setcookie('my_lang', $item, time() + 2592000, '/', null, null, true);
+                        setcookie('my_lang', $item, time() + 2592000, '/', null, HOST, true);
                         break;
                     }
                 }

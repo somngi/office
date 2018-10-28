@@ -2,10 +2,10 @@
 /**
  * @filesource modules/ar/views/customer.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Ar\Customer;
@@ -24,7 +24,13 @@ use Kotchasan\Language;
  */
 class View extends \Gcms\View
 {
+    /**
+     * @var mixed
+     */
     private $time;
+    /**
+     * @var mixed
+     */
     private $currency_unit;
 
     /**
@@ -125,8 +131,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('customer_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
-        setcookie('customer_sort', $table->sort, time() + 2592000, '/', null, null, true);
+        setcookie('customer_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
+        setcookie('customer_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
 
         return $table->render();
     }

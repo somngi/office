@@ -58,6 +58,13 @@ class Config extends \Kotchasan\Config
     public $facebook_appId = '';
 
     /**
+     * Client ID สำหรับการเข้าระบบโดย Google.
+     *
+     * @var string
+     */
+    public $google_client_id = '';
+
+    /**
      * รายชื่อฟิลด์จากตารางสมาชิก สำหรับตรวจสอบการ login.
      *
      * @var array
@@ -85,7 +92,7 @@ class Config extends \Kotchasan\Config
     /**
      * @var string
      */
-    public $password_key = 'ayuajlojhg';
+    public $password_key = '1245678912';
 
     /**
      * ไดเร็คทอรี่ template ที่ใช้งานอยู่ ตั้งแต่ DOCUMENT_ROOT
