@@ -10,7 +10,9 @@ if (defined('ROOT_PATH')) {
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
-        $conn = new \PDO($db_config['dbdriver'].':host='.$db_config['hostname'].';dbname='.$db_config['dbname'], $db_config['username'], $db_config['password'], $options);
+        $dbdriver = empty($db_config['dbdriver']) ? 'mysql' : $db_config['dbdriver'];
+        $hostname = empty($db_config['hostname']) ? 'localhost' : $db_config['hostname'];
+        $conn = new \PDO($dbdriver.':host='.$hostname.';dbname='.$db_config['dbname'], $db_config['username'], $db_config['password'], $options);
     } catch (\PDOException $e) {
         $error = true;
         echo '<h2>ความผิดพลาดในการเชื่อมต่อกับฐานข้อมูล</h2>';
